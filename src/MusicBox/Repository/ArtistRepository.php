@@ -89,6 +89,7 @@ class ArtistRepository implements RepositoryInterface
      * Deletes the artist.
      *
      * @param \MusicBox\Entity\Artist $artist
+     * @return boolean
      */
     public function delete($artist)
     {

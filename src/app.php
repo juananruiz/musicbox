@@ -12,36 +12,34 @@ $app->register(new Silex\Provider\ValidatorServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\TranslationServiceProvider());
 $app->register(new Silex\Provider\SwiftmailerServiceProvider());
+$app->register(new Silex\Provider\SecurityServiceProvider());
+$app->register(new Silex\Provider\TwigServiceProvider());
 
-$app->register(new Silex\Provider\SecurityServiceProvider(), array(
-    'security.firewalls' => array(
-        'admin' => array(
-            'pattern' => '^/',
-            'form' => array(
-                'login_path' => '/login',
-                'check_path' => '/admin/login_check',
-                'username_parameter' => 'form[username]',
-                'password_parameter' => 'form[password]',
-            ),
-            'logout'  => true,
-            'anonymous' => true,
-            'users' => $app->share(function () use ($app) {
-                return new MusicBox\Repository\UserRepository($app['db'], $app['security.encoder.digest']);
-            }),
+// Parámetros para el SecurityServiceProvider
+$app['security.firewalls'] = array(
+    'admin' => array(
+        'pattern' => '^/',
+        'form' => array(
+            'login_path' => '/login',
+            'check_path' => '/admin/login_check',
+            'username_parameter' => 'form[username]',
+            'password_parameter' => 'form[password]',
         ),
+        'logout'  => true,
+        'anonymous' => true,
+        'users' => $app->share(function () use ($app) {
+            return new MusicBox\Repository\UserRepository($app['db'], $app['security.encoder.digest']);
+        }),
     ),
-    'security.role_hierarchy' => array(
-       'ROLE_ADMIN' => array('ROLE_USER'),
-    ),
-));
-$app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.options' => array(
-        'cache' => isset($app['twig.options.cache']) ? $app['twig.options.cache'] : false,
-        'strict_variables' => true,
-    ),
-    'twig.form.templates' => array('form_div_layout.html.twig', 'common/form_div_layout.html.twig'),
-    'twig.path' => array(__DIR__ . '/../app/views')
-));
+);
+
+// Parámetros para Twig
+$app['twig.options'] = array(
+    'cache' => isset($app['twig.options.cache']) ? $app['twig.options.cache'] : false,
+    'strict_variables' => true,
+);
+$app['twig.form.templates'] = array('form_div_layout.html.twig', 'common/form_div_layout.html.twig');
+$app['twig.path'] = array(__DIR__ . '/../app/views');
 
 // Register repositories.
 $app['repository.artist'] = $app->share(function ($app) {

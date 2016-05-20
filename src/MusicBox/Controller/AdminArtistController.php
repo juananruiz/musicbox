@@ -38,8 +38,8 @@ class AdminArtistController
             $form->bind($request);
             if ($form->isValid()) {
                 $app['repository.artist']->save($artist);
-                $message = 'The artist ' . $artist->getName() . ' has been saved.';
-                $app['session']->getFlashBag()->add('success', $message);
+                    $message = 'The artist ' . $artist->getName() . ' has been saved.';
+                    $app['session']->getFlashBag()->add('success', $message);
                 // Redirect to the edit page.
                 $redirect = $app['url_generator']->generate('admin_artist_edit', array('artist' => $artist->getId()));
                 return $app->redirect($redirect);
